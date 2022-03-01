@@ -1,0 +1,1 @@
+g++ gui.cpp main.cpp graph.cpp graph_pipeline.cpp wave_pipeline.cpp particle_pipeline.cpp utils.cpp -lglfw -lGL -lGLEW -o sim
