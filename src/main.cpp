@@ -1,7 +1,8 @@
 #include <GL/glew.h>
 
 #include "glm/gtx/io.hpp"
-#include "graph_pipeline.h"
+#include "surface_graph_pipeline.h"
+#include "planar_graph_pipeline.h"
 #include "particle_pipeline.h"
 #include "wave_pipeline.h"
 #include "gui.h"
