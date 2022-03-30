@@ -1,5 +1,6 @@
 #include "wave_pipeline.h"
 #include "utils.h"
+#include "graph.h"
 
 GLuint waveVAO;
 GLuint wave_program_id = 0;
@@ -31,18 +32,21 @@ const char* wave_fragment_shader =
 
 void waveGeometryInit(const std::string& file) {
     int cur_square = 0;
-	for (int i = -10; i < 10; i++) {
-        for (int j = -10; j < 10; j++) {
-            wave_vertices.push_back(glm::vec4(i, -5, j, 1));
-            wave_vertices.push_back(glm::vec4(i + 1, -5, j, 1));
-            wave_vertices.push_back(glm::vec4(i, -5, j + 1, 1));
-            wave_vertices.push_back(glm::vec4(i + 1, -5, j + 1, 1));
-
-            wave_faces.push_back(glm::uvec3(cur_square * 4 + 2, cur_square * 4 + 1, cur_square * 4));
-            wave_faces.push_back(glm::uvec3(cur_square * 4 + 3, cur_square * 4 + 1, cur_square * 4 + 2));
-            cur_square++;
+	
+    for (int y = -10; y <= 10; y++) {
+		for (int x = -10; x <= 10; x++) {
+            wave_vertices.push_back(glm::vec4(x, -5, y, 1));
         }
     }
+	
+	for (int i = 0; i < wave_vertices.size() - 23; i++) {
+		if (i % 21 < 19) {
+			wave_faces.push_back(glm::uvec3(i + 21, i + 1, i ));
+			wave_faces.push_back(glm::uvec3(i + 22, i + 1, i + 21));
+		}
+		
+		
+	}
 }
 
 void waveGLInit() {
@@ -124,9 +128,25 @@ void waveGLInit() {
 	wave_light_position_location = 
 		glGetUniformLocation(wave_program_id, "light_position");
 
+	Graph g(wave_vertices, wave_faces);
+	printf("number of vertices: %d\n", wave_vertices.size());
+	printf("wave vertex 0: (%f, %f, %f)\n", wave_vertices[0].x, wave_vertices[0].y, wave_vertices[0].z);
+	printf("wave vertex 30: (%f, %f, %f)\n", wave_vertices[30].x, wave_vertices[30].y, wave_vertices[30].z);
+	Vertex goal = g.aStarAlgorithm(0, 30);
+	printf("dist: %f\n", g.vertices[30].prev->estimateToDestination);
+
+	/*
+	for (int i = 0; i < 10; i++) {
+		printf("vertex %d neighbors: \n", i);
+		for(int n : g.vertices[i].neighbors) {
+			printf("vertex %d neighbor: %d\n", i, n);
+		}
+	}*/
+
 }
 
 void setupWaveProgram(GUI gui) {
+
 	// Switch VAO
 	glBindVertexArray(waveVAO);
 

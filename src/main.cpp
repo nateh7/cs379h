@@ -6,6 +6,7 @@
 #include "particle_pipeline.h"
 #include "wave_pipeline.h"
 #include "gui.h"
+
 #include "utils.h"
 
 #include <fstream>
@@ -33,6 +34,8 @@ int main(int argc, char* argv[])
 
 	graphGeometryInit(argv[1]);
 	graphGLInit();
+
+	
 
 	
 	while (!glfwWindowShouldClose(window)) {

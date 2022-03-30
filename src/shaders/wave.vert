@@ -28,7 +28,7 @@ void main() {
 	vs_idx = idx;
 	vec3 vertex_pos = vertex_position.xyz;
 	gl_Position = vertex_position;
-	
+	/*
 	vec2 xz_pos = vec2(vertex_position.x, vertex_position.z);
 	vec2 wave_dir = vec2(1, 0);
 	create_wave(.5, 1, wave_dir, 25, xz_pos);
@@ -37,7 +37,7 @@ void main() {
 	wave_dir = vec2(.2, .3);
 	create_wave(.5, 1, wave_dir, 90, xz_pos);
 	wave_dir = vec2(-.4, -.2);
-	create_wave(.45, 1, wave_dir, 5, xz_pos);
+	create_wave(.45, 1, wave_dir, 5, xz_pos);*/
 	
 	vs_light_direction = light_position - gl_Position;
 
