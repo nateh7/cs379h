@@ -6,4 +6,4 @@
 
 void surfaceGraphGLInit();
 void setupSurfaceGraphProgram(GUI gui);
-void surfaceGraphGeometryInit(const std::string& file);
+void surfaceGraphGeometryInit(std::vector<glm::vec4> path_vertices);

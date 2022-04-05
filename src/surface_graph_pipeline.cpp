@@ -1,5 +1,6 @@
 #include "surface_graph_pipeline.h"
 #include "utils.h"
+#include "graph.h"
 
 GLuint surfaceGraphVAO;
 GLuint surface_graph_program_id = 0;
@@ -7,7 +8,7 @@ enum {kVertexBuffer, kIndexBuffer, kNumVbos};
 GLuint surface_graph_buffer_objects[kNumVbos];
 
 std::vector<glm::vec4> surface_graph_vertices;
-std::vector<glm::uvec3> surface_graph_faces;
+std::vector<GLuint> surface_graph_faces;
 
 glm::vec4 surface_graph_light_position(0.0f, 0.0f, 110.0f, 1.0f);
 
@@ -29,20 +30,14 @@ const char* surface_graph_fragment_shader =
 #include "shaders/surface_graph.frag"
 ;
 
-void surfaceGraphGeometryInit(const std::string& file) {
-    int cur_square = 0;
-	for (int i = -10; i < 10; i++) {
-        for (int j = -10; j < 10; j++) {
-            surface_graph_vertices.push_back(glm::vec4(1 * i, 5, 1 * j, 1));
-            surface_graph_vertices.push_back(glm::vec4(1 * (i + 1), 5, 1 * j, 1));
-            surface_graph_vertices.push_back(glm::vec4(1 * i, 5, 1 * (j + 1), 1));
-            surface_graph_vertices.push_back(glm::vec4(1 * (i + 1), 5, 1 * (j + 1), 1));
-
-            surface_graph_faces.push_back(glm::uvec3(cur_square * 4 + 2, cur_square * 4 + 1, cur_square * 4));
-            surface_graph_faces.push_back(glm::uvec3(cur_square * 4 + 3, cur_square * 4 + 1, cur_square * 4 + 2));
-            cur_square++;
-        }
-    }
+void surfaceGraphGeometryInit(std::vector<glm::vec4> path_vertices) {
+	for (int i = 0; i < path_vertices.size(); i++) {
+		surface_graph_vertices.push_back(path_vertices[i]);
+		surface_graph_faces.push_back(i);
+		if (i < path_vertices.size() - 1) {
+			surface_graph_faces.push_back(i + 1);
+		}
+	}
 }
 
 void surfaceGraphGLInit() {
@@ -70,7 +65,7 @@ void surfaceGraphGLInit() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, surface_graph_buffer_objects[kIndexBuffer]);
 	// Describe elemnt array buffer to OpenGL
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
-					sizeof(uint32_t) * surface_graph_faces.size() * 3,
+					sizeof(GLuint) * surface_graph_faces.size(),
 					surface_graph_faces.data(), GL_STATIC_DRAW);
 
 	// Setup vertex shader.
@@ -99,7 +94,7 @@ void surfaceGraphGLInit() {
 	// Setup program for the graphs, and get its locations.
 	surface_graph_program_id = glCreateProgram();
 	glAttachShader(surface_graph_program_id, vertex_shader_id);
-	glAttachShader(surface_graph_program_id, geometry_shader_id);
+	//glAttachShader(surface_graph_program_id, geometry_shader_id);
 	glAttachShader(surface_graph_program_id, fragment_shader_id);
 
 	// Bind attributes.
@@ -147,6 +142,6 @@ void setupSurfaceGraphProgram(GUI gui) {
 	
 	glUniform4fv(surface_graph_light_position_location, 1, &surface_graph_light_position[0]);
 	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-	glDrawElements(GL_TRIANGLES, 3 * surface_graph_faces.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_LINES, surface_graph_faces.size(), GL_UNSIGNED_INT, 0);
 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 }

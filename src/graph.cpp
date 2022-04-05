@@ -10,6 +10,7 @@ Graph::Graph(std::vector<glm::vec4> positions, std::vector<glm::uvec3> faces) {
         v.id = i;
         v.dist = std::numeric_limits<float>::max();
         v.visited = false;
+        v.prev = nullptr;
         vertices.push_back(v);
     }
     printf("vertices size: %d\n", vertices.size());
@@ -54,7 +55,7 @@ Vertex Graph::aStarAlgorithm(int startIdx, int endIdx) {
         Vertex currentMin = nodesToVisit.top();
         nodesToVisit.pop();
 
-        vertices[n].visited = true;
+        vertices[currentMin.id].visited = true;
 
         if (currentMin.id == endVertex.id)
             return currentMin;
@@ -74,7 +75,7 @@ Vertex Graph::aStarAlgorithm(int startIdx, int endIdx) {
 
             if (distToNeighbor >= vertices[n].dist)
                 continue;
-            vertices[n].prev = &currentMin;
+            vertices[n].prev = &vertices[currentMin.id];
             vertices[n].dist = distToNeighbor;
             //printf("dist to neighbor: %d", distToNeighbor);
             vertices[n].estimateToDestination = distToNeighbor + calculateHeuristic(vertices[n], vertices[endIdx]);

@@ -14,6 +14,7 @@ out vec4 light_direction;
 out vec4 camera_direction;
 out vec4 world_position;
 out vec4 vertex_normal;
+out vec3 bary;
 
 out vec2 uv_coords;
 void main() {
@@ -32,6 +33,13 @@ void main() {
 		uv_coords = vs_uv[n];
 		gl_Position = projection * view * model * gl_in[n].gl_Position;
 
+		if (n == 0) {
+			bary = vec3(1, 0, 0);
+		} else if (n == 1) {
+			bary = vec3(0, 1, 0);
+		} else {
+			bary = vec3(0, 0, 1);
+		}
 		EmitVertex();
 	}
 	EndPrimitive();

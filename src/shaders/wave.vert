@@ -19,8 +19,6 @@ void create_wave(in float amplitude, in float frequency, in vec2 direction, in f
 	gl_Position.x += partial_x;
 	gl_Position.z += partial_z;
 	gl_Position.y += amplitude * sin(dot(direction, pos) * frequency + speed * 0);
-
-
 }
 
 void main() {

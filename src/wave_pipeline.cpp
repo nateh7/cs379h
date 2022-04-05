@@ -1,6 +1,6 @@
 #include "wave_pipeline.h"
 #include "utils.h"
-#include "graph.h"
+
 
 GLuint waveVAO;
 GLuint wave_program_id = 0;
@@ -30,12 +30,29 @@ const char* wave_fragment_shader =
 #include "shaders/wave.frag"
 ;
 
-void waveGeometryInit(const std::string& file) {
-    int cur_square = 0;
-	
-    for (int y = -10; y <= 10; y++) {
+glm::vec4 create_wave(float amplitude, float frequency, glm::vec2 direction, float speed, glm::vec2 pos) 
+{
+	float q = 1 / (frequency * amplitude * 1.2);
+	float partial_x = q * frequency * direction.x * amplitude * cos(dot(direction, pos) * frequency + speed * 0);
+	float partial_z = q * frequency * direction.y * amplitude * cos(dot(direction, pos) * frequency + speed * 0);
+	return glm::vec4(partial_x, amplitude * sin(dot(direction, pos) * frequency + speed * 0), partial_z, 0);
+}
+
+std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> waveGeometryInit(const std::string& file) {
+    for (int z = -10; z <= 10; z++) {
 		for (int x = -10; x <= 10; x++) {
-            wave_vertices.push_back(glm::vec4(x, -5, y, 1));
+			glm::vec4 wave_vertex = glm::vec4(x, -5, z, 1);
+			glm::vec2 xz_pos(x, z);
+			glm::vec2 wave_dir(1, 0);
+			wave_vertex += create_wave(.5, 1, wave_dir, 25, xz_pos);
+			wave_dir = glm::vec2(0, 1);
+			wave_vertex += create_wave(.5, 1, wave_dir, 25, xz_pos);
+			wave_dir = glm::vec2(.2, .3);
+			wave_vertex += create_wave(.5, 1, wave_dir, 90, xz_pos);
+			wave_dir = glm::vec2(-.4, -.2);
+			wave_vertex += create_wave(.45, 1, wave_dir, 5, xz_pos);
+
+			wave_vertices.push_back(wave_vertex);
         }
     }
 	
@@ -43,11 +60,12 @@ void waveGeometryInit(const std::string& file) {
 		if (i % 21 < 19) {
 			wave_faces.push_back(glm::uvec3(i + 21, i + 1, i ));
 			wave_faces.push_back(glm::uvec3(i + 22, i + 1, i + 21));
-		}
-		
-		
+		}	
 	}
+
+	return std::make_tuple(wave_vertices, wave_faces);
 }
+
 
 void waveGLInit() {
 	/* Initialize wave OpenGL Program */
@@ -127,21 +145,6 @@ void waveGLInit() {
 
 	wave_light_position_location = 
 		glGetUniformLocation(wave_program_id, "light_position");
-
-	Graph g(wave_vertices, wave_faces);
-	printf("number of vertices: %d\n", wave_vertices.size());
-	printf("wave vertex 0: (%f, %f, %f)\n", wave_vertices[0].x, wave_vertices[0].y, wave_vertices[0].z);
-	printf("wave vertex 30: (%f, %f, %f)\n", wave_vertices[30].x, wave_vertices[30].y, wave_vertices[30].z);
-	Vertex goal = g.aStarAlgorithm(0, 30);
-	printf("dist: %f\n", g.vertices[30].prev->estimateToDestination);
-
-	/*
-	for (int i = 0; i < 10; i++) {
-		printf("vertex %d neighbors: \n", i);
-		for(int n : g.vertices[i].neighbors) {
-			printf("vertex %d neighbor: %d\n", i, n);
-		}
-	}*/
 
 }
 

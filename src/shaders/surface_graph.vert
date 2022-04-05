@@ -14,8 +14,8 @@ out int vs_idx;
 void main() {
 	
 	vs_idx = idx;
-	gl_Position = vertex_position;
-	vs_light_direction = light_position - gl_Position;
+	gl_Position = projection * view * model * (vertex_position + vec4(0, 0.1, 0, 0));
+	vs_light_direction = light_position - vertex_position;
 
 }
 )zzz"

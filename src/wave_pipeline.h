@@ -3,7 +3,8 @@
 #include "gui.h"
 #include <string>
 #include <vector>
+#include <tuple>
 
 void waveGLInit();
 void setupWaveProgram(GUI gui);
-void waveGeometryInit(const std::string& file);
+std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> waveGeometryInit(const std::string& file);
