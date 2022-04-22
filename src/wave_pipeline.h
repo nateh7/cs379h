@@ -7,4 +7,5 @@
 
 void waveGLInit();
 void setupWaveProgram(GUI gui);
-std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> waveGeometryInit(const std::string& file);
+std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> waveGeometryInit(float t);
+std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> waveGeometryUpdate(float t);

@@ -1,6 +1,7 @@
 #include "gui.h"
 #include "glm/gtc/matrix_access.hpp"
 #include "glm/gtx/transform.hpp"
+#include "main.h"
 
 const float kNear = 0.1f;
 const float kFar = 1000.0f;
@@ -158,6 +159,23 @@ bool GUI::captureWASDUPDOWN(int key, int action)
 			eye_ += pan_speed_ * up_;
 		else
 			center_ += pan_speed_ * up_;
+		return true;
+	} else if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
+		// go back one time step
+		simulation_time_--;
+		// update wave geometry based on new value of t
+		rewindOneTimeStep();
+		// regenerate graph based on updated wave geometry
+
+		// run A* on new graph
+		return true;
+	} else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
+		// advance one time step
+		simulation_time_++;
+		// update wave geometry based on new value of t
+		advanceOneTimeStep();
+		// regenerate graph based on updated wave geometry
+		// run A* on new graph
 		return true;
 	}
 	return false;

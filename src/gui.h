@@ -44,6 +44,8 @@ private:
 	float zoom_speed_ = 5.f;
 	float aspect_;
 
+	float simulation_time_ = 0.f;
+
 	glm::vec3 eye_ = glm::vec3(0.0f, camera_depth_, camera_distance_);
 	glm::vec3 up_ = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::vec3 look_ = glm::vec3(0.0f, 0.0f, -1.0f);

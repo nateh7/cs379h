@@ -37,4 +37,5 @@ public:
     Graph(std::vector<glm::vec4> positions, std::vector<glm::uvec3> faces);
     Vertex aStarAlgorithm(int startIdx, int endIdx);
     float calculateHeuristic(Vertex start, Vertex end);
+    int opened_nodes;
 };

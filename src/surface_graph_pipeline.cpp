@@ -40,6 +40,33 @@ void surfaceGraphGeometryInit(std::vector<glm::vec4> path_vertices) {
 	}
 }
 
+void surfaceGraphGeometryUpdate(std::vector<glm::vec4> path_vertices) {
+	surface_graph_vertices.clear();
+	surface_graph_faces.clear();
+	for (int i = 0; i < path_vertices.size(); i++) {
+		surface_graph_vertices.push_back(path_vertices[i]);
+		surface_graph_faces.push_back(i);
+		if (i < path_vertices.size() - 1) {
+			surface_graph_faces.push_back(i + 1);
+		}
+	}
+
+	// Setup graph vertex data in VBO
+	glBindBuffer(GL_ARRAY_BUFFER, surface_graph_buffer_objects[kVertexBuffer]);
+	// Describe vertex data to OpenGL
+	glBufferData(GL_ARRAY_BUFFER, 
+				sizeof(float) * surface_graph_vertices.size() * 4, surface_graph_vertices.data(),
+				GL_STATIC_DRAW);
+
+	// Setup element array buffer. 
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, surface_graph_buffer_objects[kIndexBuffer]);
+	// Describe elemnt array buffer to OpenGL
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
+					sizeof(GLuint) * surface_graph_faces.size(),
+					surface_graph_faces.data(), GL_STATIC_DRAW);
+
+}
+
 void surfaceGraphGLInit() {
 	/* Initialize graph OpenGL Program */
 	

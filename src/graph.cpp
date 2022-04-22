@@ -13,13 +13,11 @@ Graph::Graph(std::vector<glm::vec4> positions, std::vector<glm::uvec3> faces) {
         v.prev = nullptr;
         vertices.push_back(v);
     }
-    printf("vertices size: %d\n", vertices.size());
     for (int i = 0; i < faces.size(); i++) {
         int a = faces[i][0];
         int b = faces[i][1];
         int c = faces[i][2];
 
-        printf("(%d, %d, %d)\n", a, b, c);
         vertices[a].neighbors.insert(b);
         vertices[a].neighbors.insert(c);
 
@@ -46,7 +44,7 @@ Vertex Graph::aStarAlgorithm(int startIdx, int endIdx) {
 
     vertices[startIdx].dist = 0;
     vertices[startIdx].estimateToDestination = calculateHeuristic(startVertex, endVertex);
-
+    opened_nodes = 1;
     // TODO: order priority queue by heuristic value
     std::priority_queue<Vertex, std::vector<Vertex>, VertexComparator> nodesToVisit;
     nodesToVisit.push(vertices[startIdx]);
@@ -56,6 +54,7 @@ Vertex Graph::aStarAlgorithm(int startIdx, int endIdx) {
         nodesToVisit.pop();
 
         vertices[currentMin.id].visited = true;
+        
 
         if (currentMin.id == endVertex.id)
             return currentMin;
@@ -81,7 +80,9 @@ Vertex Graph::aStarAlgorithm(int startIdx, int endIdx) {
             vertices[n].estimateToDestination = distToNeighbor + calculateHeuristic(vertices[n], vertices[endIdx]);
 
             nodesToVisit.push(vertices[n]);
+            opened_nodes++;
         }
+        printf("opened nodes %d\n", opened_nodes);
     }
 
     return endVertex;
