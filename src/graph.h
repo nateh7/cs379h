@@ -2,6 +2,7 @@
 #include <vector>
 #include "glm/glm.hpp"
 
+
 class Vertex; 
 
 class Edge {
@@ -35,7 +36,7 @@ class Graph {
 public: 
     std::vector<Vertex> vertices;
     Graph(std::vector<glm::vec4> positions, std::vector<glm::uvec3> faces);
-    Vertex aStarAlgorithm(int startIdx, int endIdx);
-    float calculateHeuristic(Vertex start, Vertex end);
+    Vertex aStarAlgorithm(int startIdx, int endIdx, float t);
+    float calculateHeuristic(Vertex start, Vertex end, float t);
     int opened_nodes;
 };

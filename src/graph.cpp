@@ -31,20 +31,29 @@ Graph::Graph(std::vector<glm::vec4> positions, std::vector<glm::uvec3> faces) {
 
 }
 
-float Graph::calculateHeuristic(Vertex start, Vertex end) {
+float Graph::calculateHeuristic(Vertex start, Vertex end, float t) {
     // 3D Euclidean Distance as Heuristic
-    return glm::length(start.position - end.position);
+    //return glm::length(start.position - end.position);
+    // 3D Manhattan Distance as Heuristic
+    /*
+    glm::vec4 diff = start.position - end.position;
+    return abs(diff.x) + abs(diff.y) + abs(diff.z) + abs(diff.w);
+    */
+    // No heursitic -> Dijkstra's algorithm
+    return 0;
+    
+
 }
 
 // TODO: Benchmark basic A*
-Vertex Graph::aStarAlgorithm(int startIdx, int endIdx) {
+Vertex Graph::aStarAlgorithm(int startIdx, int endIdx, float t) {
 
     Vertex startVertex = vertices[startIdx];
     Vertex endVertex = vertices[endIdx];
-
+    opened_nodes = 0;
     vertices[startIdx].dist = 0;
-    vertices[startIdx].estimateToDestination = calculateHeuristic(startVertex, endVertex);
-    opened_nodes = 1;
+    vertices[startIdx].estimateToDestination = calculateHeuristic(startVertex, endVertex, t);
+    
     // TODO: order priority queue by heuristic value
     std::priority_queue<Vertex, std::vector<Vertex>, VertexComparator> nodesToVisit;
     nodesToVisit.push(vertices[startIdx]);
@@ -55,21 +64,25 @@ Vertex Graph::aStarAlgorithm(int startIdx, int endIdx) {
 
         vertices[currentMin.id].visited = true;
         
+        
 
-        if (currentMin.id == endVertex.id)
+        if (currentMin.id == endVertex.id) {
+            for (int i = 0; i < vertices.size(); i++) {
+                if(vertices[i].visited == true) {
+                    opened_nodes++;
+                }
+            }
             return currentMin;
+        }
+            
         
         std::set<int> neighbors = currentMin.neighbors;
 
         for (int n : neighbors) {
-            printf("neighbor id: %d\n", n);
             Vertex& neighbor = vertices[n];
             if (vertices[n].visited)
                 continue;
             
-            printf("current pos: (%f, %f, %f)\n", currentMin.position.x, currentMin.position.y, currentMin.position.z);
-            printf("neighbor pos: (%f, %f, %f)\n", neighbor.position.x, neighbor.position.y, neighbor.position.z);
-            printf("position dist: %f\n", glm::length(currentMin.position - neighbor.position));
             float distToNeighbor = currentMin.dist + glm::length(currentMin.position - neighbor.position);
 
             if (distToNeighbor >= vertices[n].dist)
@@ -77,13 +90,20 @@ Vertex Graph::aStarAlgorithm(int startIdx, int endIdx) {
             vertices[n].prev = &vertices[currentMin.id];
             vertices[n].dist = distToNeighbor;
             //printf("dist to neighbor: %d", distToNeighbor);
-            vertices[n].estimateToDestination = distToNeighbor + calculateHeuristic(vertices[n], vertices[endIdx]);
+            vertices[n].estimateToDestination = distToNeighbor + calculateHeuristic(vertices[n], vertices[endIdx], t);
 
             nodesToVisit.push(vertices[n]);
-            opened_nodes++;
+            
         }
-        printf("opened nodes %d\n", opened_nodes);
+        
     }
 
+    
+    for (int i = 0; i < vertices.size(); i++) {
+        if(vertices[i].visited == true) {
+            opened_nodes++;
+        }
+    }
+    
     return endVertex;
 }

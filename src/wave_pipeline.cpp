@@ -32,15 +32,16 @@ const char* wave_fragment_shader =
 
 glm::vec4 create_wave(float amplitude, float frequency, glm::vec2 direction, float speed, glm::vec2 pos, float time) 
 {
-	float q = 1 / (frequency * amplitude * 1.2);
+	float steepness = 1.2;
+	float q = 1 / (frequency * amplitude * steepness);
 	float partial_x = q * frequency * direction.x * amplitude * cos(dot(direction, pos) * frequency + speed * time);
 	float partial_z = q * frequency * direction.y * amplitude * cos(dot(direction, pos) * frequency + speed * time);
 	return glm::vec4(partial_x, amplitude * sin(dot(direction, pos) * frequency + speed * time), partial_z, 0);
 }
 
-std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> waveGeometryInit(float t) {
+std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> waveGeometryInit(float t, int grid_dimension) {
 	
-	int grid_dimension = 81;
+	
 	int min_z = -(grid_dimension / 2);
 	int max_z = (grid_dimension / 2);
 	int min_x = -(grid_dimension / 2);
@@ -50,6 +51,8 @@ std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> waveGeometryInit(flo
 			glm::vec4 wave_vertex = glm::vec4(x, -5, z, 1);
 			glm::vec2 xz_pos(x, z);
 
+// Surface #1 
+ 
 			glm::vec2 wave_dir(1, 0);
 			wave_vertex += create_wave(.5, 1, wave_dir, 25, xz_pos, t);
 			wave_dir = glm::vec2(0, 1);
@@ -59,12 +62,39 @@ std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> waveGeometryInit(flo
 			wave_dir = glm::vec2(-.89, -.45);
 			wave_vertex += create_wave(.45, 0.1, wave_dir, 5, xz_pos, t);
 
+// Surface #2
+/*
+			glm::vec2 wave_dir(1, 0);
+			wave_vertex += create_wave(.5, 1, wave_dir, 25, xz_pos, t);
+*/
+// Surface #3
+/*
+			glm::vec2 wave_dir(1, 0);
+			wave_vertex += create_wave(2, 1, wave_dir, 25, xz_pos, t);
+			wave_dir = glm::vec2(0, 1);
+			wave_vertex += create_wave(2, 1, wave_dir, 25, xz_pos, t);
+			wave_dir = glm::vec2(.55, .83);
+			wave_vertex += create_wave(.5, 0.2, wave_dir, 90, xz_pos, t);
+			wave_dir = glm::vec2(-.89, -.45);
+			wave_vertex += create_wave(.45, 0.1, wave_dir, 5, xz_pos, t);
+*/
+// Surface #4
+/*
+			glm::vec2 wave_dir(1, 0);
+			wave_vertex += create_wave(0.5, 1, wave_dir, 25, xz_pos, t);
+			wave_dir = glm::vec2(0, 1);
+			wave_vertex += create_wave(0.5, 1, wave_dir, 25, xz_pos, t);
+			wave_dir = glm::vec2(.55, .83);
+			wave_vertex += create_wave(.1, 0.2, wave_dir, 90, xz_pos, t);
+			wave_dir = glm::vec2(-.89, -.45);
+			wave_vertex += create_wave(.1, 0.1, wave_dir, 5, xz_pos, t);
+*/
 			wave_vertices.push_back(wave_vertex);
         }
     }
 	
-	for (int i = 0; i < wave_vertices.size() - (grid_dimension + 2); i++) {
-		if (i % grid_dimension < (grid_dimension - 2)) {
+	for (int i = 0; i <= wave_vertices.size() - (grid_dimension + 2); i++) {
+		if (i % grid_dimension <= (grid_dimension - 2)) {
 			wave_faces.push_back(glm::uvec3(i + grid_dimension, i + 1, i));
 			wave_faces.push_back(glm::uvec3(i + grid_dimension + 1, i + 1, i + grid_dimension));
 		}	
@@ -74,11 +104,11 @@ std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> waveGeometryInit(flo
 }
 
 
-std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> waveGeometryUpdate(float t) {
+std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> waveGeometryUpdate(float t, int grid_dimension) {
 	wave_vertices.clear();
 	wave_faces.clear();
-	
-    waveGeometryInit(t);
+
+    waveGeometryInit(t, grid_dimension);
 	// Setup wave vertex data in VBO
 	glBindBuffer(GL_ARRAY_BUFFER, wave_buffer_objects[kVertexBuffer]);
 	// Describe vertex data to OpenGL
