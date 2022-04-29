@@ -52,7 +52,7 @@ std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> waveGeometryInit(flo
 			glm::vec2 xz_pos(x, z);
 
 // Surface #1 
- 
+ /*
 			glm::vec2 wave_dir(1, 0);
 			wave_vertex += create_wave(.5, 1, wave_dir, 25, xz_pos, t);
 			wave_dir = glm::vec2(0, 1);
@@ -61,7 +61,7 @@ std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> waveGeometryInit(flo
 			wave_vertex += create_wave(.5, 0.2, wave_dir, 90, xz_pos, t);
 			wave_dir = glm::vec2(-.89, -.45);
 			wave_vertex += create_wave(.45, 0.1, wave_dir, 5, xz_pos, t);
-
+*/
 // Surface #2
 /*
 			glm::vec2 wave_dir(1, 0);
@@ -79,16 +79,16 @@ std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> waveGeometryInit(flo
 			wave_vertex += create_wave(.45, 0.1, wave_dir, 5, xz_pos, t);
 */
 // Surface #4
-/*
+
 			glm::vec2 wave_dir(1, 0);
-			wave_vertex += create_wave(0.5, 1, wave_dir, 25, xz_pos, t);
+			wave_vertex += create_wave(0.2, 1, wave_dir, 25, xz_pos, t);
 			wave_dir = glm::vec2(0, 1);
-			wave_vertex += create_wave(0.5, 1, wave_dir, 25, xz_pos, t);
+			wave_vertex += create_wave(0.2, 1, wave_dir, 25, xz_pos, t);
 			wave_dir = glm::vec2(.55, .83);
 			wave_vertex += create_wave(.1, 0.2, wave_dir, 90, xz_pos, t);
 			wave_dir = glm::vec2(-.89, -.45);
 			wave_vertex += create_wave(.1, 0.1, wave_dir, 5, xz_pos, t);
-*/
+
 			wave_vertices.push_back(wave_vertex);
         }
     }

@@ -19,7 +19,7 @@
 int time_step = 0;
 int total_opened_nodes = 0;
 float t = 0;
-int grid_dimension = 11;
+int grid_dimension = 21;
 int num_edges = 2 * (grid_dimension - 1) * (grid_dimension - 1);
 int cur_vertex_id = grid_dimension - 1;
 const int end_vertex_id = grid_dimension*grid_dimension-grid_dimension;
@@ -51,7 +51,7 @@ void advanceOneTimeStep() {
 	std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> wave_geometry = waveGeometryUpdate(t, grid_dimension);
 	std::vector<glm::vec4> wave_vertices = std::get<0>(wave_geometry);
 	std::vector<glm::uvec3> wave_faces = std::get<1>(wave_geometry);
-	Graph g(wave_vertices, wave_faces);
+	Graph g(wave_vertices, wave_faces, grid_dimension, dt);
 
 	clock_t start = clock();
 	Vertex goal = g.aStarAlgorithm(cur_vertex_id, end_vertex_id, t);
@@ -108,10 +108,6 @@ int main(int argc, char* argv[])
 	GLFWwindow *window = init_glefw();
 	GUI gui(window, window_width, window_height);
 
-
-	//particleGeometryInit(argv[1]);
-	//particleGLInit();
-
 	std::tuple<std::vector<glm::vec4>, std::vector<glm::uvec3>> wave_geometry = waveGeometryInit(0, grid_dimension);
 	std::vector<glm::vec4> wave_vertices = std::get<0>(wave_geometry);
 	std::vector<glm::uvec3> wave_faces = std::get<1>(wave_geometry);
@@ -119,15 +115,31 @@ int main(int argc, char* argv[])
 	waveGLInit();
 
 	
-	Graph g(wave_vertices, wave_faces);
-	Vertex goal = g.aStarAlgorithm(cur_vertex_id, end_vertex_id, t);
+	Graph g(wave_vertices, wave_faces, grid_dimension, dt);
 
+	clock_t start = clock();
+	Vertex goal = g.aStarAlgorithm(cur_vertex_id, end_vertex_id, t);
+	double execution_time =  (double) (clock() - start) / CLOCKS_PER_SEC;
+
+	// Use backpointers to create vector of path vertices
 	Vertex* current = &goal;
 	std::vector<glm::vec4> path_vertices;
 	while (current != nullptr) {
 		path_vertices.push_back(current->position);
 		current = current->prev;
 	}
+
+	// compute length of path from vertex positions
+	float path_length = 0.0f;
+	for(int i = 0; i < path_vertices.size() - 1; i++) {
+		path_length += glm::length(path_vertices[i] - path_vertices[i + 1]);
+	}
+
+	printf("Number of vertices in graph: %ld\n", g.vertices.size());
+	printf("Number of edges in graph: %d\n", num_edges);
+	printf("A* execution time on initial surface: %f seconds\n", execution_time);
+	printf("Number of opened nodes on initial surface: %d\n", g.opened_nodes);
+	printf("Length of shortest path: %f units\n", path_length);
 
 	surfaceGraphGeometryInit(path_vertices);
 	surfaceGraphGLInit();
