@@ -36,7 +36,7 @@ Graph::Graph(std::vector<glm::vec4> positions, std::vector<glm::uvec3> faces, in
 
 float Graph::calculateHeuristic(Vertex start, Vertex end, float t) {
     
-    /*
+    
     
     // Predicted position of start vertex at next time step on Surface #1 
     int start_id = start.id;
@@ -76,19 +76,19 @@ float Graph::calculateHeuristic(Vertex start, Vertex end, float t) {
     //printf("end position at current time step: (%f, %f, %f)\n", end.position.x, end.position.y, end.position.z);
     //printf("end position at next time step: (%f, %f, %f)\n", predicted_end_pos.x, predicted_end_pos.y, predicted_end_pos.z);
     // Time-Advanced 3D Euclidean Distance Heuristic for Surface #1
-    // return glm::length(predicted_start_pos - predicted_end_pos);
+     return glm::length(predicted_start_pos - predicted_end_pos);
     // Time-Advanced 3D Manhattan Distance Heuristic for Surface #1
-    glm::vec4 diff = predicted_start_pos - predicted_end_pos;
-    return abs(diff.x) + abs(diff.y) + abs(diff.z);
-*/
+    //glm::vec4 diff = predicted_start_pos - predicted_end_pos;
+    //return abs(diff.x) + abs(diff.y) + abs(diff.z);
+
 
     // 3D Euclidean Distance as Heuristic
-    return glm::length(start.position - end.position);
+    //return glm::length(start.position - end.position);
     // 3D Manhattan Distance as Heuristic
     /*
     glm::vec4 diff = start.position - end.position;
-    return abs(diff.x) + abs(diff.y) + abs(diff.z);*/
-    
+    return abs(diff.x) + abs(diff.y) + abs(diff.z);
+    */
     // No heursitic -> Dijkstra's algorithm
     //return 0;
 }

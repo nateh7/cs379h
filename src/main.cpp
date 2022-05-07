@@ -19,7 +19,7 @@
 int time_step = 0;
 int total_opened_nodes = 0;
 float t = 0;
-int grid_dimension = 21;
+int grid_dimension = 81;
 int num_edges = 2 * (grid_dimension - 1) * (grid_dimension - 1);
 int cur_vertex_id = grid_dimension - 1;
 const int end_vertex_id = grid_dimension*grid_dimension-grid_dimension;
